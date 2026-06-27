@@ -1,17 +1,25 @@
 import { getUsername } from "@/services/storage/user/userService";
 import { router, Stack } from "expo-router";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function RootLayout() {
-  const username = getUsername();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    const username = getUsername();
     if (!username) {
       router.replace("/onboarding");
     } else {
       router.replace("/");
     }
+    setIsReady(true);
   }, []);
 
-  return <Stack />;
+  if (!isReady) return null;
+
+  return (
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SafeAreaProvider>
+  );
 }
