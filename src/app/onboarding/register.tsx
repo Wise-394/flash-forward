@@ -3,6 +3,7 @@ import { AppInput } from "@/components/ui/appInput";
 import { AppText } from "@/components/ui/appText";
 import { WideButton } from "@/components/ui/wideButton";
 import { useAuthStore } from "@/store/useAuthStore";
+import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
@@ -11,6 +12,7 @@ export default function Register() {
   const setUsernameStore = useAuthStore((state) => state.setUsernameStore);
   const handleSubmit = () => {
     setUsernameStore(usernameInput);
+    router.replace("/");
   };
 
   return (
@@ -30,3 +32,6 @@ export default function Register() {
     </Screen>
   );
 }
+
+// TODO GESTURE
+//TODO HOME

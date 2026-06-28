@@ -30,6 +30,14 @@ export default function HomeTabLayout() {
         }}
       />
       <Tabs.Screen
+        name="timeline"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="analytics-outline" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           tabBarIcon: ({ color }) => (
