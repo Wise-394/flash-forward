@@ -2,17 +2,15 @@ import { Screen } from "@/components/Screen";
 import { AppInput } from "@/components/ui/appInput";
 import { AppText } from "@/components/ui/appText";
 import { WideButton } from "@/components/ui/wideButton";
-import { setUsername } from "@/services/storage/user/userService";
-import { router } from "expo-router";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useState } from "react";
 import { View } from "react-native";
 
 export default function Register() {
   const [usernameInput, setUsernameInput] = useState("");
-
+  const setUsernameStore = useAuthStore((state) => state.setUsernameStore);
   const handleSubmit = () => {
-    setUsername(usernameInput);
-    router.replace("/");
+    setUsernameStore(usernameInput);
   };
 
   return (
