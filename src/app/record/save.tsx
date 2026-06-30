@@ -1,3 +1,4 @@
+import { VidPreview } from "@/components/features/vidPreview";
 import { Screen } from "@/components/Screen";
 import { AppText } from "@/components/ui/appText";
 import { BackButton } from "@/components/ui/backButton";
@@ -17,6 +18,9 @@ export default function SaveRecording() {
       </View>
 
       {/* BODY */}
+      <View className="mt-5 flex-1">
+        <VidPreview />
+      </View>
     </Screen>
   );
 }
