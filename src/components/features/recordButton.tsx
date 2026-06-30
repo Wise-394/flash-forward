@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Animated, Pressable } from "react-native";
 
@@ -6,21 +7,32 @@ export function RecordButton() {
   const innerScale = useRef(new Animated.Value(1)).current;
   const borderRadius = useRef(new Animated.Value(28)).current;
 
-  function toggleRecord() {
-    const toRecording = !recording;
-    setRecording(toRecording);
+  const toggleRecord = () => {
+    if (!recording) {
+      return startRecording();
+    }
+    return stopRecording();
+  };
+
+  const startRecording = () => {
+    setRecording(true);
 
     Animated.parallel([
-      Animated.spring(innerScale, {
-        toValue: toRecording ? 0.5 : 1,
-        useNativeDriver: false,
-      }),
-      Animated.spring(borderRadius, {
-        toValue: toRecording ? 6 : 28,
-        useNativeDriver: false,
-      }),
+      Animated.spring(innerScale, { toValue: 0.5, useNativeDriver: false }),
+      Animated.spring(borderRadius, { toValue: 6, useNativeDriver: false }),
     ]).start();
-  }
+  };
+
+  const stopRecording = () => {
+    setRecording(false);
+
+    Animated.parallel([
+      Animated.spring(innerScale, { toValue: 1, useNativeDriver: false }),
+      Animated.spring(borderRadius, { toValue: 28, useNativeDriver: false }),
+    ]).start();
+
+    router.navigate("/record/save");
+  };
 
   return (
     <Pressable
