@@ -14,13 +14,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function RecordingPage() {
   const [isCamReady, setCamReady] = useState(false);
   const cameraRef = useRef<CameraView>(null!);
-  const deleteRecordedVideo = useRecordStore(
-    (state) => state.deleteRecordedVideo,
-  );
 
   useEffect(() => {
     return () => {
-      deleteRecordedVideo();
+      if (useRecordStore.getState().isRecording) {
+        cameraRef.current?.stopRecording();
+      }
+      useRecordStore.getState().cleanUpStore();
     };
   }, []);
 
@@ -63,4 +63,3 @@ export default function RecordingPage() {
     </CameraPermissionsGate>
   );
 }
-// TODO CANT RECORD WHEN STILL LOADING

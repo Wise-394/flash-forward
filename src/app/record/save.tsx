@@ -6,12 +6,20 @@ import { AppText } from "@/components/ui/appText";
 import { BackButton } from "@/components/ui/backButton";
 import { AppMultiLine } from "@/components/ui/multiLineInput";
 import { WideButton } from "@/components/ui/wideButton";
-import { useState } from "react";
+import { useRecordStore } from "@/store/useRecordStore";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 export default function SaveRecording() {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      useRecordStore.getState().cleanUpStore();
+    };
+  }, []);
+
   return (
     <Screen>
       {/* HEADER */}

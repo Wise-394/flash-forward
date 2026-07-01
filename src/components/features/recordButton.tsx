@@ -8,23 +8,24 @@ interface Props {
   camera: RefObject<CameraView | null>;
 }
 
+const MIN_RECORD_MS = 1000;
+
 export function RecordButton({ camera }: Props) {
   const isRecording = useRecordStore((state) => state.isRecording);
+  const startTime = useRecordStore((state) => state.startTime);
   const startRecordingStore = useRecordStore((state) => state.startRecording);
   const stopRecordingStore = useRecordStore((state) => state.stopRecording);
   const innerScale = useRef(new Animated.Value(1)).current;
   const borderRadius = useRef(new Animated.Value(28)).current;
-  const recordStartTime = useRef(0);
 
   const toggleRecord = () => {
     if (!camera.current) return;
     if (!isRecording) return startRecording();
-    if (Date.now() - recordStartTime.current < 1000) return;
+    if (startTime && Date.now() - startTime < MIN_RECORD_MS) return;
     return stopRecording();
   };
 
   const startRecording = () => {
-    recordStartTime.current = Date.now();
     Animated.parallel([
       Animated.spring(innerScale, { toValue: 0.5, useNativeDriver: false }),
       Animated.spring(borderRadius, { toValue: 6, useNativeDriver: false }),
@@ -37,8 +38,13 @@ export function RecordButton({ camera }: Props) {
       Animated.spring(innerScale, { toValue: 1, useNativeDriver: false }),
       Animated.spring(borderRadius, { toValue: 28, useNativeDriver: false }),
     ]).start();
-    await stopRecordingStore(camera.current);
-    router.navigate("/record/save");
+
+    try {
+      await stopRecordingStore(camera.current);
+      router.navigate("/record/save");
+    } catch (e) {
+      console.warn("Failed to stop recording:", e);
+    }
   };
 
   return (

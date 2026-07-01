@@ -32,5 +32,3 @@ export default function Register() {
     </Screen>
   );
 }
-
-// TODO GESTURE
