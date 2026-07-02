@@ -1,8 +1,8 @@
 import { db } from "@/configs/Sqlite";
-import { VideoType } from "@/types/types";
+import { VideoMetadataType } from "@/types/types";
 
 export const insertVideo = async (
-  video: Omit<VideoType, "id" | "createdAt">,
+  video: Omit<VideoMetadataType, "id" | "createdAt">,
 ) => {
   try {
     await db.runAsync(
@@ -20,9 +20,11 @@ export const insertVideo = async (
   }
 };
 
-export const selectAllVideo = async (): Promise<VideoType[]> => {
+export const selectAllVideo = async (): Promise<VideoMetadataType[]> => {
   try {
-    const result = await db.getAllAsync<VideoType>("SELECT * FROM videos");
+    const result = await db.getAllAsync<VideoMetadataType>(
+      "SELECT * FROM videos",
+    );
     return result;
   } catch (err) {
     console.error(err);
@@ -30,9 +32,11 @@ export const selectAllVideo = async (): Promise<VideoType[]> => {
   }
 };
 
-export const selectVideo = async (id: number): Promise<VideoType | null> => {
+export const selectVideo = async (
+  id: number,
+): Promise<VideoMetadataType | null> => {
   try {
-    const result = await db.getFirstAsync<VideoType>(
+    const result = await db.getFirstAsync<VideoMetadataType>(
       "SELECT * FROM VIDEOS WHERE id = ?",
       [id],
     );

@@ -1,4 +1,4 @@
-export interface VideoType {
+export interface VideoMetadataType {
   id: number;
   title: string;
   description: string;
