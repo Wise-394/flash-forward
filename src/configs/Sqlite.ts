@@ -1,8 +1,16 @@
 import * as SQLite from "expo-sqlite";
 
-export const db = await SQLite.openDatabaseAsync("flashForward");
+let db: SQLite.SQLiteDatabase | null = null;
+
+export const getDb = async () => {
+  if (!db) {
+    db = await SQLite.openDatabaseAsync("flashForward");
+  }
+  return db;
+};
 
 export const createTable = async () => {
+  const db = await getDb();
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS videos (

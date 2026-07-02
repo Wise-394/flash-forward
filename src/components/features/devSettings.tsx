@@ -1,14 +1,21 @@
 import { setUsername } from "@/services/storage/user/userService";
+import { deleteVideoFile } from "@/services/storage/video/saveVideo";
+import {
+  deleteAllVideos,
+  selectAllVideos,
+} from "@/services/storage/video/videoQueries";
 import { router } from "expo-router";
 import { Linking, View } from "react-native";
 import { AppText } from "../ui/appText";
 import { WideButton } from "../ui/wideButton";
+
 export function DevSettingsPanel() {
   return (
     <View>
       <AppText>Dev Tools</AppText>
       <ResetUsernameCard />
       <ResetPermissionCard />
+      <ClearAllVideosCard />
     </View>
   );
 }
@@ -40,6 +47,24 @@ function ResetPermissionCard() {
         Settings, then toggle Camera/Microphone off and back on.
       </AppText>
       <WideButton onClick={resetPermission} label="Open App Settings" />
+    </View>
+  );
+}
+
+function ClearAllVideosCard() {
+  const clearAllVideos = async () => {
+    const videos = await selectAllVideos();
+    videos.forEach((video) => deleteVideoFile(video.filepath));
+    await deleteAllVideos();
+  };
+
+  return (
+    <View className="bg-card rounded-xl p-4">
+      <AppText className="mb-2 font-bold">Clear All Videos</AppText>
+      <AppText className="text-muted mb-3 text-sm">
+        Deletes all saved video files and their metadata.
+      </AppText>
+      <WideButton onClick={clearAllVideos} label="Delete All" />
     </View>
   );
 }

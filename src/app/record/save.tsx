@@ -6,14 +6,18 @@ import { AppText } from "@/components/ui/appText";
 import { BackButton } from "@/components/ui/backButton";
 import { AppMultiLine } from "@/components/ui/multiLineInput";
 import { WideButton } from "@/components/ui/wideButton";
+import { saveVideo } from "@/services/storage/video/saveVideo";
+import { insertVideo } from "@/services/storage/video/videoQueries";
 import { useRecordStore } from "@/store/useRecordStore";
 import { VideoMetadataType } from "@/types/types";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 export default function SaveRecording() {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+
   const [inputFields, setInputFields] = useState({
     title: "",
     description: "",
@@ -25,7 +29,14 @@ export default function SaveRecording() {
     };
   }, []);
 
-  const saveMetadata = (filePath: string) => {
+  const handleSaveVideo = (): string | null => {
+    const video = useRecordStore.getState().recordedVideo;
+    if (!video) return null;
+    const filePath = saveVideo(video.uri);
+    return filePath;
+  };
+
+  const handleSaveMetadata = (filePath: string) => {
     const metadata: Omit<VideoMetadataType, "id"> = {
       title: inputFields.title,
       description: inputFields.description,
@@ -33,12 +44,15 @@ export default function SaveRecording() {
       filepath: filePath,
       unlockDate: date.toISOString(),
     };
+    insertVideo(metadata);
   };
 
   const handleSave = () => {
-    // TODO SAVE
-    // save video
-    // save metadata
+    const filePath = handleSaveVideo();
+    if (!filePath) return;
+
+    handleSaveMetadata(filePath);
+    router.replace("/");
   };
 
   return (
@@ -92,7 +106,7 @@ export default function SaveRecording() {
           />
         </View>
       </View>
-      <WideButton label="Send to future" onClick={() => {}} />
+      <WideButton label="Send to future" onClick={() => handleSave()} />
     </Screen>
   );
 }

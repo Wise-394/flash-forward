@@ -43,7 +43,10 @@ export const useRecordStore = create<RecordStore>((set, get) => ({
     const video = get().recordedVideo;
     if (!video) return;
     try {
-      new File(video.uri).delete();
+      const file = new File(video.uri);
+      if (file.exists) {
+        file.delete();
+      }
     } catch (e) {
       console.warn("Failed to delete recorded video:", e);
     }
