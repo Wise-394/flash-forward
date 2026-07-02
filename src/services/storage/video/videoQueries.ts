@@ -24,26 +24,39 @@ export const insertVideo = async (
 export const selectAllVideos = async (): Promise<VideoMetadataType[]> => {
   try {
     const db = await getDb();
-    const result = await db.getAllAsync<VideoMetadataType>(
-      "SELECT * FROM videos",
-    );
-    return result;
+    const rows = await db.getAllAsync<any>("SELECT * FROM videos");
+    return rows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      filepath: row.file_path,
+      unlockDate: row.unlock_date,
+      createdAt: row.created_at,
+    }));
   } catch (err) {
     console.error(err);
     return [];
   }
 };
-
 export const selectVideo = async (
   id: number,
 ): Promise<VideoMetadataType | null> => {
   try {
     const db = await getDb();
-    const result = await db.getFirstAsync<VideoMetadataType>(
-      "SELECT * FROM VIDEOS WHERE id = ?",
+    const row = await db.getFirstAsync<any>(
+      "SELECT * FROM videos WHERE id = ?",
       [id],
     );
-    return result;
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      filepath: row.file_path,
+      unlockDate: row.unlock_date,
+      createdAt: row.created_at,
+    };
   } catch (err) {
     console.error(err);
     return null;
