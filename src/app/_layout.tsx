@@ -1,3 +1,4 @@
+import { createTable } from "@/configs/Sqlite";
 import { useAuthStore } from "@/store/useAuthStore";
 import { router, Stack } from "expo-router";
 import { useEffect } from "react";
@@ -8,6 +9,7 @@ export default function RootLayout() {
   const username = useAuthStore((state) => state.username);
 
   useEffect(() => {
+    createTable();
     if (!username) {
       router.replace("/onboarding");
     } else {
